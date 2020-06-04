@@ -1,0 +1,30 @@
+version: '3'
+services:
+  postgres_db:
+     build: postgres
+     container_name: route_finder_postgres
+     environment:
+        POSTGRES_USER: "prajwram"
+        POSTGRES_DB: "postgres"
+        POSTGRES_PASSWORD: "postgres"
+     ports:
+        - "5433:5432"
+     volumes:
+        - pgdata:/var/lib/postgresql/data/
+     hostname: postgres
+
+  web:
+    image: route_finder_spring
+    build: .
+    depends_on:
+       - postgres_db
+    container_name: route_finder_spring
+    environment:
+      DOWNLOAD_FILES: "False"
+#    tty: true
+    volumes:
+       - ~/storage/route_finder/PDFrepo:/root/storage/route_finder/PDFrepo
+    ports:
+      - "8080:8080"
+volumes:
+  pgdata:
